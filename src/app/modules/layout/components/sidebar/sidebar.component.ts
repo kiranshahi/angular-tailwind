@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import packageJson from '../../../../../../package.json';
 import { MenuService } from '../../services/menu.service';
@@ -20,5 +20,21 @@ export class SidebarComponent implements OnInit {
 
   public toggleSidebar() {
     this.menuService.toggleSidebar();
+  }
+
+  public toggleHideSidebar() {
+    this.menuService.toggleHideSidebar();
+  }
+
+  @HostListener('mouseenter')
+  onMouseEnter() {
+    if (!this.menuService.showSideBar && !this.menuService.isHiddenSidebar) {
+      this.menuService.sidebarHovered = true;
+    }
+  }
+
+  @HostListener('mouseleave')
+  onMouseLeave() {
+    this.menuService.sidebarHovered = false;
   }
 }

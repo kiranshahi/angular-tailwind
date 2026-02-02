@@ -1,12 +1,18 @@
 <nav
-  [ngClass]="menuService.showSideBar ? 'w-[210px] xl:w-[280px]' : 'w-[70px]'"
-  class="bg-background hidden h-full flex-col justify-between pt-3 transition-all duration-300 lg:flex">
+  [ngClass]="{
+    'w-[210px] xl:w-[280px]': menuService.showSideBar,
+    'w-[70px]': !menuService.showSideBar && !menuService.sidebarHovered && !menuService.isHiddenSidebar,
+    'w-[210px] xl:w-[280px] hover-expanded': menuService.sidebarHovered && !menuService.showSideBar && !menuService.isHiddenSidebar,
+    'hidden': menuService.isHiddenSidebar,
+    'sidebar-animating': true
+  }"
+  class="bg-background h-full flex-col justify-between pt-3 transition-all duration-300 lg:flex">
   <div class="overflow-hidden">
     <!-- Logo -->
     <div
-      [ngClass]="menuService.showSideBar ? 'justify-between' : 'justify-center'"
+      [ngClass]="menuService.showSideBar || menuService.sidebarHovered ? 'justify-between' : 'justify-center'"
       class="mx-4 mb-2 flex h-9 items-center">
-      @if (menuService.showSideBar) {
+      @if (menuService.showSideBar || menuService.sidebarHovered) {
         <div class="flex items-center">
           <a
             (click)="toggleSidebar()"
@@ -18,12 +24,20 @@
           </b>
         </div>
       }
-      <button
-        (click)="toggleSidebar()"
-        class="text-muted-foreground/50 hover:text-muted-foreground flex items-center justify-center rounded-md p-2 transition-all duration-200 focus:outline-hidden"
-        [ngClass]="{ 'rotate-180': !menuService.showSideBar }">
-        <svg-icon src="assets/icons/heroicons/solid/chevron-double-left.svg"> </svg-icon>
-      </button>
+      <div class="flex items-center gap-1">
+        <button
+          (click)="toggleSidebar()"
+          class="text-muted-foreground/50 hover:text-muted-foreground flex items-center justify-center rounded-md p-2 transition-all duration-200 focus:outline-hidden"
+          [ngClass]="{ 'rotate-180': !menuService.showSideBar && !menuService.sidebarHovered }">
+          <svg-icon src="assets/icons/heroicons/solid/chevron-double-left.svg"> </svg-icon>
+        </button>
+        <button
+          (click)="toggleHideSidebar()"
+          class="text-muted-foreground/50 hover:text-muted-foreground flex items-center justify-center rounded-md p-2 transition-all duration-200 focus:outline-hidden"
+          title="Hide sidebar">
+          <svg-icon src="assets/icons/heroicons/solid/x-mark.svg"> </svg-icon>
+        </button>
+      </div>
     </div>
 
     <!-- Menu Items -->
@@ -48,7 +62,7 @@
         <span class="bg-primary/10 text-primary px-2 font-semibold">v{{ appJson.version }}</span>
       </div>
 
-      @if (!menuService.showSideBar) {
+      @if (!menuService.showSideBar && !menuService.sidebarHovered) {
         <div class="fixed w-full">
           <span
             class="z-1 bg-foreground text-background absolute left-12 -top-4 w-auto min-w-max origin-left scale-0 p-2 text-xs font-bold shadow-md transition-all duration-200 group-hover:scale-100">
@@ -59,3 +73,15 @@
     </a>
   </div>
 </nav>
+
+<!-- Sidebar Hidden Toggle Button (Visible when sidebar is hidden) -->
+@if (menuService.isHiddenSidebar) {
+  <div class="fixed bottom-4 left-4 z-50">
+    <button
+      (click)="toggleHideSidebar()"
+      class="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center justify-center rounded-lg p-3 shadow-lg transition-all duration-200"
+      title="Show sidebar">
+      <svg-icon src="assets/icons/heroicons/solid/bars-3.svg"> </svg-icon>
+    </button>
+  </div>
+}

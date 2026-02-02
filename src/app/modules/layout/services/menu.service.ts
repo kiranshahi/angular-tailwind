@@ -10,6 +10,8 @@ import { MenuItem, SubMenuItem } from 'src/app/core/models/menu.model';
 export class MenuService implements OnDestroy {
   private _showSidebar = signal(true);
   private _showMobileMenu = signal(false);
+  private _isHiddenSidebar = signal(false);
+  private _sidebarHovered = signal(false);
   private _pagesMenu = signal<MenuItem[]>([]);
   private _subscription = new Subscription();
 
@@ -47,6 +49,12 @@ export class MenuService implements OnDestroy {
   get pagesMenu() {
     return this._pagesMenu();
   }
+  get isHiddenSidebar() {
+    return this._isHiddenSidebar();
+  }
+  get sidebarHovered() {
+    return this._sidebarHovered();
+  }
 
   set showSideBar(value: boolean) {
     this._showSidebar.set(value);
@@ -54,9 +62,19 @@ export class MenuService implements OnDestroy {
   set showMobileMenu(value: boolean) {
     this._showMobileMenu.set(value);
   }
+  set isHiddenSidebar(value: boolean) {
+    this._isHiddenSidebar.set(value);
+  }
+  set sidebarHovered(value: boolean) {
+    this._sidebarHovered.set(value);
+  }
 
   public toggleSidebar() {
     this._showSidebar.set(!this._showSidebar());
+  }
+
+  public toggleHideSidebar() {
+    this._isHiddenSidebar.set(!this._isHiddenSidebar());
   }
 
   public toggleMenu(menu: SubMenuItem) {
